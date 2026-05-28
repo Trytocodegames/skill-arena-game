@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Skill Arena</title>
+  <style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #1e1e2f, #121212);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.game-container {
+  text-align: center;
+  background: rgba(255,255,255,0.05);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  width: 300px;
+}
+
+.stats p {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.start {
+  background: #4CAF50;
+  color: white;
+}
+
+.click {
+  background: #2196F3;
+  color: white;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pop-effect {
+  animation: pop 0.15s ease;
+}
+
+.flash {
+  box-shadow: 0 0 20px #ffffff;
+}
+.particle {
+  position: absolute;
+  color: yellow;
+  font-size: 24px;
+  pointer-events: none;
+
+  animation: floatUp 0.6s forwards;
+}
+
+@keyframes floatUp {
+
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+
+}
+</style>
+</head>
+
+<body>
+    <audio id="clickSound" src="click.mp3"></audio>
+    <div class="game-container">
+
+  <h1>🎮 Skill Arena</h1>
+
+  <div class="stats">
+    <p>เวลา: <span id="time">10</span></p>
+    <p>คะแนน: <span id="score">0</span></p>
+    <p>🏆 Best: <span id="best">0</span></p>
+
+  <p>🔥 Combo: <span id="combo">1</span>x</p>
+  <p>⭐ Rank: <span id="rank">Beginner</span></p>
+  </div>
+
+  <button class="btn start" onclick="startGame()">เริ่มเกม</button>
+  <button id="clickBtn" class="btn click" onclick="addScore()">กด!</button>
+
+</div>
+<script>
+    let score = 0;
+    let time = 10;
+    let gameRunning = false;
+    let timer;
+    let best = localStorage.getItem("bestScore") || 0;
+    let combo = 1;
+let lastClick = 0;
+
+    function startGame() {
+        document.getElementById("best").innerText = best;
+      score = 0;
+      time = 10;
+      gameRunning = true;
+
+      document.getElementById("score").innerText = score;
+      document.getElementById("time").innerText = time;
+
+      timer = setInterval(() => {
+        time--;
+        document.getElementById("time").innerText = time;
+
+        if (time <= 0) {
+      clearInterval(timer);
+      gameRunning = false;
+
+      if (score > best) {
+        best = score;
+        localStorage.setItem("bestScore", best);
+        document.getElementById("best").innerText = best;
+      }
+
+      alert("หมดเวลา! คะแนนของคุณคือ " + score);
+    }
+  }, 1000);
+}
+
+    function addScore() {
+  if (gameRunning) {
+
+    let now = Date.now();
+
+if (now - lastClick < 250) {
+  combo++;
+} else {
+  combo = 1;
+}
+
+lastClick = now;
+
+score += combo;
+
+document.getElementById("combo").innerText = combo;
+let rank = "Beginner";
+
+if (score >= 1000) {
+  rank = "Pro";
+}
+
+if (score >= 10000) {
+  rank = "Master";
+}
+
+if (score >= 100000) {
+  rank = "Legend";
+}
+
+document.getElementById("rank").innerText = rank;
+    document.getElementById("score").innerText = score;
+
+    // 🔊 เล่นเสียง
+    const sound = document.getElementById("clickSound");
+    sound.currentTime = 0;
+    sound.play();
+
+    // ✨ เอฟเฟกต์ปุ่ม
+    const btn = document.getElementById("clickBtn");
+
+    btn.classList.add("pop-effect");
+    btn.classList.add("flash");
+
+    setTimeout(() => {
+      btn.classList.remove("pop-effect");
+      btn.classList.remove("flash");
+    }, 150);
+    const particle = document.createElement("div");
+
+particle.innerText = "✨";
+
+particle.classList.add("particle");
+
+particle.style.left =
+  Math.random() * window.innerWidth + "px";
+
+particle.style.top =
+  Math.random() * window.innerHeight + "px";
+
+document.body.appendChild(particle);
+
+setTimeout(() => {
+  particle.remove();
+}, 600);
+  }
+}
+  </script>
+
+</body>
+</html>
