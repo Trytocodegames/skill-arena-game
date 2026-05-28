@@ -2,6 +2,11 @@
 <html>
 <head>
   <title>Skill Arena</title>
+  <meta name="viewport"
+  content="width=device-width,
+  initial-scale=1.0,
+  maximum-scale=1.0,
+  user-scalable=no">
   <style>
 body {
   margin: 0;
@@ -11,7 +16,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  touch-action: manipulation;
+overflow: hidden;
 }
 
 .game-container {
@@ -30,13 +37,14 @@ body {
 
 .btn {
   width: 100%;
-  padding: 12px;
+  padding: 20px;
   margin-top: 10px;
   border: none;
   border-radius: 12px;
-  font-size: 18px;
+  font-size: 24px;
   cursor: pointer;
   transition: 0.2s;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .start {
